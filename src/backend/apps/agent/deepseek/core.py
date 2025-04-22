@@ -23,7 +23,7 @@ from .types import (
 __CTX_VARS_NAME__ = "context_variables"
 
 
-class Client:
+class DeepSeekClient:
     def __init__(self, client=None, key='sk-d53a6d90486e462aa755d198e940ea9d', url='https://api.deepseek.com'):
         if not client:
             client = OpenAI(api_key=key, base_url=url)

@@ -1,6 +1,6 @@
 import json
 
-from client import Client
+from deepseek import Client
 
 
 def process_and_print_streaming_response(response):

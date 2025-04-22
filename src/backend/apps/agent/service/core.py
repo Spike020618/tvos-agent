@@ -1,8 +1,8 @@
 import json
 
-from ..client import Client, Agent, Response, Result
+from ..deepseek import Agent
 
-from .deepseek import deepseek_client
+from .clients import deepseek_client, zhipu_client
 
 class Service():
     def __init__(self) -> None:
@@ -44,26 +44,28 @@ class Service():
         with open('./apps/agent/config/movie_library.json', 'r', encoding='utf-8') as f:
             self.movies = json.load(f)
 
-    def chat(self, message:str):
+    def _chat(self, message:str):
         response = deepseek_client.run(agent=self.agent_talk, messages=[{"role": "user", "content": message}], context_variables={})
         return response.messages[0]['content']
 
-    def search(self, message:str):
+    def _search(self, message:str):
         response = deepseek_client.run(agent=self.agent_search, messages=[{"role": "user", "content": message}], context_variables={})
         return response.messages[0]['content']
 
-    def run(self, message:str, steps:list[str]):
-        user_platform = ['爱奇艺', 'B站']
+    def search(self, message:str, steps:list[str]):
         chat_info = ''
         movies = []
         for step in steps:
             print(step)
             if step == 'search':
-                movies = self.search(message=message)
+                movies = self._search(message=message)
             elif step == 'talk':
-                chat_info = self.chat(message=message + str(movies))
+                chat_info = self._chat(message=message + str(movies))
         movies_info = [
             movie for movie in self.movies
             if movie["title"] in movies
         ]
         return chat_info, movies, movies_info
+
+    def image_analyze(self, img_path, text):
+        return zhipu_client.analyze(img_path=img_path, text=text)

@@ -16,7 +16,7 @@ def index(request):
     return HttpResponse("Hello Django!")
 
 #@ensure_csrf_cookie  # 强制返回 CSRF Cookie
-def movie_search(request):
+def search(request):
     if request.method == 'GET':
         try:
             msg = request.GET.get('message', '')
@@ -29,7 +29,7 @@ def movie_search(request):
                 })
             steps = task.planner.plan(message=msg)
             print(steps)
-            chat, movies, movies_info = service.run(message=msg, steps=steps)
+            chat, movies, movies_info = service.search(message=msg, steps=steps)
             return JsonResponse({
                 "chat": chat,
                 "movies": movies,
@@ -63,32 +63,25 @@ def handle_upload(request):
         try:
             # 处理文本输入
             text_input = request.POST.get('text', '')
-            
+
             # 处理图片上传
             image_file = request.FILES.get('image')
             image_path = None
             if image_file:
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                image_path = f'media/uploads/{timestamp}_{image_file.name}'
+                image_path = f'data/images/{timestamp}_{image_file.name}'
                 with open(image_path, 'wb+') as destination:
                     for chunk in image_file.chunks():
                         destination.write(chunk)
-            
-            # 处理语音转文字
-            audio_file = request.FILES.get('audio')
-            audio_text = ""
-            if audio_file:
-                # 这里添加你的语音识别逻辑
-                # 可以使用第三方API如百度语音识别、Azure Speech等
-                audio_text = "[语音识别结果]"
-            
-            # 这里添加你的业务逻辑处理
-            
+
+            # 分析结果
+            result = service.image_analyze(image_path, text_input)
+            print(result)
+
             return JsonResponse({
                 'status': 'success',
                 'text': text_input,
                 'image_path': image_path,
-                'audio_text': audio_text
             })
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)})

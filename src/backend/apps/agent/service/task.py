@@ -5,8 +5,8 @@ from typing import List, Literal
 import re
 import json
 
-from ..client import Client, Agent, Response, Result
-from .deepseek import deepseek_client
+from ..deepseek import Agent
+from .clients import deepseek_client
 
 class Task():
     def __init__(self) -> None:
