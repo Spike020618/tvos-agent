@@ -1,0 +1,174 @@
+<!-- templates/upload_form.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>多模态输入</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .input-section {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .preview {
+            margin-top: 10px;
+        }
+        #imagePreview {
+            max-width: 300px;
+            max-height: 300px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>多模态输入界面</h1>
+    <div class="form-container">
+        
+        <!-- 图片上传 -->
+        <div class="input-section">
+            <h2>图片上传</h2>
+            <input type="file" id="imageUpload" accept="image/*">
+            <div class="preview">
+                <img id="imagePreview" style="display: none;">
+            </div>
+        </div>
+
+        <!-- 文本输入 -->
+        <div class="input-section">
+            <h2>文本输入</h2>
+            <textarea id="textInput" placeholder="请输入文本..."></textarea>
+        </div>
+        
+        <!-- 语音输入 -->
+        <div class="input-section">
+            <h2>语音输入</h2>
+            <button id="startRecording">开始录音</button>
+            <button id="stopRecording" disabled>停止录音</button>
+            <div id="audioPreview"></div>
+            <p id="transcriptResult"></p>
+        </div>
+        
+        <button id="submitBtn">提交</button>
+    </div>
+
+    <script>
+        // 图片预览
+        document.getElementById('imageUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('imagePreview');
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 语音录制逻辑
+        let mediaRecorder;
+        let audioChunks = [];
+        
+        document.getElementById('startRecording').addEventListener('click', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                
+                document.getElementById('startRecording').disabled = true;
+                document.getElementById('stopRecording').disabled = false;
+                
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+                
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    audioChunks = [];
+                    
+                    // 显示音频预览
+                    const audioURL = URL.createObjectURL(audioBlob);
+                    const audioPreview = document.getElementById('audioPreview');
+                    audioPreview.innerHTML = `<audio controls src="${audioURL}"></audio>`;
+                    
+                    // 这里可以添加语音识别API调用
+                    document.getElementById('transcriptResult').textContent = "处理语音中...";
+                    
+                    // 模拟语音识别结果
+                    setTimeout(() => {
+                        document.getElementById('transcriptResult').textContent = "这是语音识别的结果文本";
+                    }, 2000);
+                };
+                
+                mediaRecorder.start();
+            } catch (err) {
+                console.error('录音错误:', err);
+                alert('无法访问麦克风');
+            }
+        });
+        
+        document.getElementById('stopRecording').addEventListener('click', () => {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+                document.getElementById('startRecording').disabled = false;
+                document.getElementById('stopRecording').disabled = true;
+            }
+        });
+
+        // 提交表单
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            const textInput = document.getElementById('textInput').value;
+            const imageFile = document.getElementById('imageUpload').files[0];
+            
+            // 创建FormData对象
+            const formData = new FormData();
+            formData.append('text', textInput);
+            if (imageFile) {
+                formData.append('image', imageFile);
+            }
+            
+            // 这里可以添加语音文件的提交
+            
+            try {
+                const response = await fetch('http://localhost:8000/ImageUploader', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                if (result.status === 'success') {
+                    alert('提交成功！');
+                    console.log('服务器响应:', result);
+                } else {
+                    alert('提交失败: ' + (result.message || '未知错误'));
+                }
+            } catch (error) {
+                console.error('提交错误:', error);
+                alert('网络错误，请重试');
+            }
+        });
+    </script>
+</body>
+</html>
