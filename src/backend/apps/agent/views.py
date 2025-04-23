@@ -1,8 +1,11 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, StreamingHttpResponse, HttpResponseBadRequest
 from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
 from datetime import datetime
+import os
+import re
 
 
 from .service import Service, Task
@@ -50,6 +53,59 @@ def search(request):
         "status": "error"
     })
 
+def stream_media(request, media_id):
+    # 1. 获取视频文件名（安全处理）
+    # 安全校验文件名
+    media_path = service.get_media_path(media_id)
+    if media_path == '':
+        return HttpResponseBadRequest("media not found")
+
+    # 3. 获取文件大小
+    file_size = os.path.getsize(media_path)
+    range_header = request.headers.get('Range', '')
+
+    # 4. 处理范围请求（断点续传）
+    if range_header:
+        match = re.search(r'bytes=(\d+)-(\d+)?', range_header)
+        if not match:
+            return HttpResponseBadRequest("Invalid Range header")
+
+        first_byte = int(match.group(1))
+        last_byte = int(match.group(2)) if match.group(2) else file_size - 1
+        chunk_size = last_byte - first_byte + 1
+
+        def chunk_generator():
+            with open(media_path, 'rb') as f:
+                f.seek(first_byte)
+                remaining = chunk_size
+                while remaining > 0:
+                    read_size = min(4096, remaining)  # 4KB分块
+                    chunk = f.read(read_size)
+                    if not chunk:
+                        break
+                    remaining -= len(chunk)
+                    yield chunk
+
+        response = StreamingHttpResponse(
+            chunk_generator(),
+            status=206,
+            content_type='video/mp4'
+        )
+        response['Content-Range'] = f'bytes {first_byte}-{last_byte}/{file_size}'
+        response['Content-Length'] = str(chunk_size)
+    else:
+        # 5. 完整文件传输（小文件备用方案）
+        response = StreamingHttpResponse(
+            open(media_path, 'rb'),
+            content_type='video/mp4'
+        )
+        response['Content-Length'] = str(file_size)
+
+    # 6. 设置关键响应头
+    response['Accept-Ranges'] = 'bytes'
+    response['Content-Disposition'] = f'inline; filename="{os.path.basename(media_path)}"'
+    return response
+
 
 def get_server_ip(request):
     return JsonResponse({'ip': get_ip()})
@@ -69,7 +125,7 @@ def handle_upload(request):
             image_path = None
             if image_file:
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                image_path = f'images/{timestamp}_{image_file.name}'
+                image_path = f'image/{timestamp}_{image_file.name}'
                 with open(image_path, 'wb+') as destination:
                     for chunk in image_file.chunks():
                         destination.write(chunk)
@@ -85,5 +141,4 @@ def handle_upload(request):
             })
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)})
-    
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})

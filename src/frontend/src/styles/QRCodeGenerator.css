@@ -1,81 +1,179 @@
 /* 主容器样式 */
 .qrcode__container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1.5rem;
-    padding: 2rem;
-    background-color: #f8f9fa;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 2rem;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* 二维码下载区域 */
+.qrcode__download {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+/* 二维码图像容器 */
+.qrcode__image {
+  padding: 1rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e9ecef;
+}
+
+/* 下载按钮样式 */
+.qrcode__download button {
+  padding: 0.75rem 1.5rem;
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.qrcode__download button:hover {
+  background-color: #4338ca;
+  transform: translateY(-1px);
+}
+
+.qrcode__download button:active {
+  transform: translateY(0);
+}
+
+/* 响应式设计 */
+@media (max-width: 640px) {
+  .qrcode__container {
+    padding: 1.5rem;
   }
   
-  /* 二维码下载区域 */
-  .qrcode__download {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-    width: 100%;
-  }
-  
-  /* 二维码图像容器 */
   .qrcode__image {
-    padding: 1rem;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    border: 1px solid #e9ecef;
+    padding: 0.75rem;
   }
   
-  /* 下载按钮样式 */
   .qrcode__download button {
-    padding: 0.75rem 1.5rem;
-    background-color: #4f46e5;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
   }
-  
-  .qrcode__download button:hover {
-    background-color: #4338ca;
-    transform: translateY(-1px);
-  }
-  
-  .qrcode__download button:active {
-    transform: translateY(0);
-  }
-  
-  /* 响应式设计 */
-  @media (max-width: 640px) {
-    .qrcode__container {
-      padding: 1.5rem;
-    }
-    
-    .qrcode__image {
-      padding: 0.75rem;
-    }
-    
-    .qrcode__download button {
-      padding: 0.6rem 1.2rem;
-      font-size: 0.9rem;
-    }
-  }
-  
-  /* 动画效果 */
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  .qrcode__download {
-    animation: fadeIn 0.3s ease-out forwards;
-  }
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.qrcode__download {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* 固定在右上角的小开关 */
+.qr-toggle-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  z-index: 999;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: all 0.3s;
+}
+
+.qr-toggle-button:hover {
+  background-color: #45a049;
+  transform: scale(1.1);
+}
+
+/* 模态框遮罩层 */
+.qr-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* 模态框内容 */
+.qr-modal-content {
+  position: relative;
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  max-width: 90%;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+/* 弹窗内的关闭按钮 */
+.close-modal-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.close-modal-button:hover {
+  background-color: #d32f2f;
+  transform: scale(1.1);
+}
+
+/* 原有样式调整 */
+.qrcode__image {
+  margin: 0 auto 20px;
+}
+
+.current-url {
+  margin: 15px 0;
+  word-break: break-all;
+}
+
+.refresh-button {
+  padding: 8px 16px;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.refresh-button:hover {
+  background-color: #0b7dda;
+}

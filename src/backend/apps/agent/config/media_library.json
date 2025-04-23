@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "type": "movie",
+    "name": "功夫",
+    "year": 2004,
+    "director": "周星驰",
+    "actors": ["周星驰", "元秋", "梁小龙"],
+    "tags": ["动作", "喜剧", "武侠"],
+    "rating": 8.7,
+    "access_control": {
+      "min_age": 12
+    },
+    "img_name": "1.png",
+    "file_name": "test.mp4"
+  },
+  {
+    "id": 2,
+    "type": "video",
+    "name": "pubg",
+    "year": 2004,
+    "director": "周星驰",
+    "actors": ["周星驰", "元秋", "梁小龙"],
+    "tags": ["动作", "喜剧", "武侠"],
+    "rating": 8.7,
+    "access_control": {
+      "min_age": 12
+    },
+    "img_name": "2.png",
+    "file_name": "pubg.mp4"
+  }
+]

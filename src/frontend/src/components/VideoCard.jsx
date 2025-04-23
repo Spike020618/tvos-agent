@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import '../styles/VideoCard.css';
 
 export default function VideoCard({ video }) {
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -42,7 +43,7 @@ export default function VideoCard({ video }) {
           >
             ×
           </button>
-          <iframe src={video.videoUrl} scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+          <video src={video.videoUrl} scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></video>
         </div>
       )}
     </>

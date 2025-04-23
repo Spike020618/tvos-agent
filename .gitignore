@@ -1,0 +1,8 @@
+# dir 不需要提交的目录
+/src/backend/image
+/src/backend/media
+​
+# file 不需要提交的文件
+​
+# log 不需要提交的任意包含后缀名为log的文件
+*.log

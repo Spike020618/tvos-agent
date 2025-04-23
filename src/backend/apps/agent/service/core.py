@@ -1,3 +1,5 @@
+from django.conf import settings
+import os
 import json
 
 from ..deepseek import Agent
@@ -41,8 +43,8 @@ class Service():
             functions=[]
         )
 
-        with open('./apps/agent/config/movie_library.json', 'r', encoding='utf-8') as f:
-            self.movies = json.load(f)
+        with open('./apps/agent/config/media_library.json', 'r', encoding='utf-8') as f:
+            self.medias = json.load(f)
 
     def _chat(self, message:str):
         response = deepseek_client.run(agent=self.agent_talk, messages=[{"role": "user", "content": message}], context_variables={})
@@ -54,18 +56,31 @@ class Service():
 
     def search(self, message:str, steps:list[str]):
         chat_info = ''
-        movies = []
+        medias = []
         for step in steps:
             print(step)
             if step == 'search':
-                movies = self._search(message=message)
+                medias = self._search(message=message)
             elif step == 'talk':
-                chat_info = self._chat(message=message + str(movies))
-        movies_info = [
-            movie for movie in self.movies
-            if movie["title"] in movies
+                chat_info = self._chat(message=message + str(medias))
+        medias_info = [
+            movie for movie in self.medias
+            if movie["title"] in medias
         ]
-        return chat_info, movies, movies_info
+        return chat_info, medias, medias_info
 
     def image_analyze(self, img_path, text):
         return zhipu_client.analyze(img_path=img_path, text=text)
+
+    def get_media_path(self, media_id):
+        file_name = ''
+        for media in self.medias:
+            if media.get('id') == media_id:
+                file_name = media['file_name']
+
+        video_path = os.path.join(settings.MEDIA_ROOT, '', file_name)
+        print(video_path)
+        if not os.path.exists(video_path):
+            return ''
+
+        return video_path

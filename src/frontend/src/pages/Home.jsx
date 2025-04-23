@@ -13,7 +13,7 @@ export default function Home() {
         id: 1,
         title: '“一演丁真 便入戏 得太深”——丁真能量单曲《群丁》',
         thumbnail: 'https://tse1-mm.cn.bing.net/th/id/OIP-C.dC6CLNcwmIg1I2fEbinJyQHaE5',
-        videoUrl: 'https://player.bilibili.com/player.html?bvid=BV1Y7SWYpERP/',
+        videoUrl: 'http://localhost:8000/agent/media/1',
         views: '1250.8万',
         duration: '04:09'
       },
@@ -21,7 +21,7 @@ export default function Home() {
         id: 2,
         title: '【Playlist】温暖的旋律让你忘却疲惫|居家歌单|放松|慵懒|节奏',
         thumbnail: 'https://tse1-mm.cn.bing.net/th/id/OIP-C.dC6CLNcwmIg1I2fEbinJyQHaE5',
-        videoUrl: 'https://player.bilibili.com/player.html?BV1Dy1aYwEWg',
+        videoUrl: 'http://localhost:8000/agent/media/2',
         views: '7.5万',
         duration: '43:38'
       },

@@ -65,6 +65,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -132,3 +133,8 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 ALLOWED_HOSTS = ['*']  # 开发时可临时允许所有主机
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
