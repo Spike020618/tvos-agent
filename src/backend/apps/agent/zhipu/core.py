@@ -23,7 +23,7 @@ class ZhiPuClient:
                 },
                 {
                     "type": "text",
-                    "text": "这个图片和什么影视作品相关呢？"+text
+                    "text": "请根据以下文字，获取与影视相关的信息："+text
                 }
                 ]
             }

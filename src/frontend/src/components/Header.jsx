@@ -6,10 +6,9 @@ export default function Header() {
   return (
     <header className="header">
       <nav>
-        <Link to="/" className="logo">视频网站</Link>
+        <Link to="/" className="logo">Media Agent</Link>
         <div className="search">
           <input type="text" placeholder="搜索视频..." />
-          <VoiceAssistant/>
         </div>
       </nav>
     </header>

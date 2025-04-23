@@ -8,6 +8,8 @@
     "actors": ["周星驰", "元秋", "梁小龙"],
     "tags": ["动作", "喜剧", "武侠"],
     "rating": 8.7,
+    "duration": "04:09",
+    "views": 200000,
     "access_control": {
       "min_age": 12
     },
@@ -23,6 +25,8 @@
     "actors": ["周星驰", "元秋", "梁小龙"],
     "tags": ["动作", "喜剧", "武侠"],
     "rating": 8.7,
+    "duration": "04:09",
+    "views": 200000,
     "access_control": {
       "min_age": 12
     },

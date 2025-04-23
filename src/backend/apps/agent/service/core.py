@@ -64,8 +64,8 @@ class Service():
             elif step == 'talk':
                 chat_info = self._chat(message=message + str(medias))
         medias_info = [
-            movie for movie in self.medias
-            if movie["title"] in medias
+            media for media in self.medias
+            if media["name"] in medias
         ]
         return chat_info, medias, medias_info
 

@@ -26,30 +26,30 @@ def search(request):
             if task.sensitiveFilter.contains_sensitive(msg):
                 return JsonResponse({
                     "chat": "⚠️ 检测到敏感词",
-                    "movies": "",
-                    "movies_info": "",
+                    "medias": "",
+                    "medias_info": "",
                     "status": "error"
                 })
             steps = task.planner.plan(message=msg)
             print(steps)
-            chat, movies, movies_info = service.search(message=msg, steps=steps)
+            chat, medias, medias_info = service.search(message=msg, steps=steps)
             return JsonResponse({
                 "chat": chat,
-                "movies": movies,
-                "movies_info": movies_info,
+                "medias": medias,
+                "medias_info": medias_info,
                 "status": "success"
             })
         except Exception as e:
             return JsonResponse({
                 "chat": str(e),
-                "movies": "",
-                "movies_info": "",
+                "medias": "",
+                "medias_info": "",
                 "status": "error"
             }, status=500)
     return JsonResponse({
         "chat": "请使用GET方法",
-        "movies": "",
-        "movies_info": "",
+        "medias": "",
+        "medias_info": "",
         "status": "error"
     })
 

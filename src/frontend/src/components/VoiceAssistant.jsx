@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import '../styles/VoiceAssistant.css';
 
-const VoiceAssistant = () => {
+const VoiceAssistant = ({ onUpdateMedias }) => {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [conversation, setConversation] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [mediaData, setMediaData] = useState(null);  // Add this state
   
   const {
     transcript,
@@ -75,6 +76,10 @@ const VoiceAssistant = () => {
       
       setConversation(prev => [...prev, botMessage]);
       speak(botMessage.content);
+
+      if (data.medias_info) {
+        setMediaData(data.medias_info);
+      }
     } catch (error) {
       console.error('❌ 完整错误链:', {
         name: error.name,
@@ -91,6 +96,11 @@ const VoiceAssistant = () => {
       setIsLoading(false);
       resetTranscript();
     }
+  };
+
+  // 新增：将视频数据推送到父组件
+  const handleAddToMedias = (media_data) => {
+      onUpdateMedias(media_data);
   };
 
   const speak = (text) => {
@@ -192,6 +202,12 @@ const VoiceAssistant = () => {
                     🎤 聆听中...
                   </>
                 ) : '🎤 开始说话'}
+              </button>
+              <button 
+                onClick={() => handleAddToMedias(media_data)}
+                className="add-video-btn"
+              >
+                ➕ 添加到推荐视频
               </button>
               
               <div className="status-text">

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import '../styles/VideoCard.css';
+import '../styles/MediaCard.css';
 
-export default function VideoCard({ video }) {
+export default function MediaCard({ media }) {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   return (
@@ -9,11 +9,11 @@ export default function VideoCard({ video }) {
       <div className="video-card">
         <div className="thumbnail-container">
           <img 
-            src={video.thumbnail}
+            src={media.img}
             className="thumbnail"
-            alt={video.title}
+            alt={media.name}
           />
-          <span className="duration">{video.duration}</span>
+          <span className="duration">{media.duration}</span>
           {/* 修改播放按钮点击事件 */}
           <button 
             className="play-button"
@@ -27,9 +27,9 @@ export default function VideoCard({ video }) {
           </button>
         </div>
         <div className="info">
-          <h3>{video.title}</h3>
+          <h3>{media.name}</h3>
           <div className="meta">
-            <span>{video.views}次观看</span>
+            <span>{media.views}次观看</span>
           </div>
         </div>
       </div>
@@ -43,7 +43,7 @@ export default function VideoCard({ video }) {
           >
             ×
           </button>
-          <video src={video.videoUrl} scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></video>
+          <video src={media.url} scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></video>
         </div>
       )}
     </>
