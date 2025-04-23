@@ -69,7 +69,7 @@ def handle_upload(request):
             image_path = None
             if image_file:
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                image_path = f'data/images/{timestamp}_{image_file.name}'
+                image_path = f'images/{timestamp}_{image_file.name}'
                 with open(image_path, 'wb+') as destination:
                     for chunk in image_file.chunks():
                         destination.write(chunk)
