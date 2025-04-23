@@ -24,5 +24,4 @@ from .settings import MEDIA_ROOT
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('agent/', include('apps.agent.urls')),
-    re_path(r'media/(?P<path>.*)$',serve,{'document_root':MEDIA_ROOT}), # 增加这条
 ]
