@@ -99,8 +99,8 @@ const VoiceAssistant = ({ onUpdateMedias }) => {
   };
 
   // 新增：将视频数据推送到父组件
-  const handleAddToMedias = (media_data) => {
-      onUpdateMedias(media_data);
+  const handleAddToMedias = (mediaData) => {
+      onUpdateMedias(mediaData);
   };
 
   const speak = (text) => {
@@ -204,7 +204,7 @@ const VoiceAssistant = ({ onUpdateMedias }) => {
                 ) : '🎤 开始说话'}
               </button>
               <button 
-                onClick={() => handleAddToMedias(media_data)}
+                onClick={() => handleAddToMedias(mediaData)}
                 className="add-video-btn"
               >
                 ➕ 添加到推荐视频

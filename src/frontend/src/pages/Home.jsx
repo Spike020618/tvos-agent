@@ -40,7 +40,7 @@ export default function Home() {
 
   return (
     <div className="home-page">
-      <div><VoiceAssistant onUpdateVideos={handleUpdateMedias}/></div>
+      <div><VoiceAssistant onUpdateMedias={handleUpdateMedias}/></div>
       <div><QRCodeGenerator/></div>
       <h2 className="section-title">推荐视频</h2>
       <div className="video-grid">
