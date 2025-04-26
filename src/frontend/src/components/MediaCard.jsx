@@ -33,9 +33,9 @@ export default function MediaCard({ media }) {
           </div>
         </div>
       </div>
-
+      
       {/* 全屏播放层（保持不变） */}
-      {isFullscreen && (
+      {/*isFullscreen && (
         <div className="fullscreen-overlay">
           <button 
             className="close-button"
@@ -43,9 +43,9 @@ export default function MediaCard({ media }) {
           >
             ×
           </button>
-          <video src={media.url} scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></video>
+          <video src={media.url} scrolling="no" border="0" frameBorder="no" frameSpacing="0" allowFullScreen="true"></video>
         </div>
-      )}
+      )*/}
     </>
   );
 }

@@ -61,15 +61,6 @@
             <textarea id="textInput" placeholder="请输入文本..."></textarea>
         </div>
         
-        <!-- 语音输入 -->
-        <div class="input-section">
-            <h2>语音输入</h2>
-            <button id="startRecording">开始录音</button>
-            <button id="stopRecording" disabled>停止录音</button>
-            <div id="audioPreview"></div>
-            <p id="transcriptResult"></p>
-        </div>
-        
         <button id="submitBtn">提交</button>
     </div>
 
@@ -88,55 +79,6 @@
             }
         });
 
-        // 语音录制逻辑
-        let mediaRecorder;
-        let audioChunks = [];
-        
-        document.getElementById('startRecording').addEventListener('click', async () => {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
-                
-                document.getElementById('startRecording').disabled = true;
-                document.getElementById('stopRecording').disabled = false;
-                
-                mediaRecorder.ondataavailable = event => {
-                    audioChunks.push(event.data);
-                };
-                
-                mediaRecorder.onstop = async () => {
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                    audioChunks = [];
-                    
-                    // 显示音频预览
-                    const audioURL = URL.createObjectURL(audioBlob);
-                    const audioPreview = document.getElementById('audioPreview');
-                    audioPreview.innerHTML = `<audio controls src="${audioURL}"></audio>`;
-                    
-                    // 这里可以添加语音识别API调用
-                    document.getElementById('transcriptResult').textContent = "处理语音中...";
-                    
-                    // 模拟语音识别结果
-                    setTimeout(() => {
-                        document.getElementById('transcriptResult').textContent = "这是语音识别的结果文本";
-                    }, 2000);
-                };
-                
-                mediaRecorder.start();
-            } catch (err) {
-                console.error('录音错误:', err);
-                alert('无法访问麦克风');
-            }
-        });
-        
-        document.getElementById('stopRecording').addEventListener('click', () => {
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-                document.getElementById('startRecording').disabled = false;
-                document.getElementById('stopRecording').disabled = true;
-            }
-        });
-
         // 提交表单
         document.getElementById('submitBtn').addEventListener('click', async () => {
             const textInput = document.getElementById('textInput').value;
@@ -152,7 +94,7 @@
             // 这里可以添加语音文件的提交
             
             try {
-                const response = await fetch('http://localhost:8000/agent/uploader', {
+                const response = await fetch('http://localhost:8000/agent/upload', {
                     method: 'POST',
                     body: formData
                 });

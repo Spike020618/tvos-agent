@@ -5,7 +5,7 @@ class ZhiPuClient:
     def __init__(self, key='f1677ec1cb784f3fbda4b8767bcc3c1e.PaYoK8zqumX6QFtT'):
         self.client = ZhipuAI(api_key=key)
     
-    def analyze(self, img_path, text):
+    def chat(self, img_path, text):
         with open(img_path, 'rb') as img_file:
             img_base = base64.b64encode(img_file.read()).decode('utf-8')
 
@@ -23,7 +23,7 @@ class ZhiPuClient:
                 },
                 {
                     "type": "text",
-                    "text": "请根据以下文字，获取与影视相关的信息："+text
+                    "text": text
                 }
                 ]
             }

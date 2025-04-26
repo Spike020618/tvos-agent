@@ -126,6 +126,9 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
+
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", 
@@ -136,5 +139,6 @@ ALLOWED_HOSTS = ['*']  # 开发时可临时允许所有主机
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-USE_X_FORWARDED_HOST = True
-USE_X_FORWARDED_PORT = True
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 0

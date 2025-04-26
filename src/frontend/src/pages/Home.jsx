@@ -7,9 +7,20 @@ import VoiceAssistant from '../components/VoiceAssistant';
 export default function Home() {
   const [medias, setMedias] = useState([])
 
-  // 新增：接收语音助手的数据并更新 videos
+  // 暂时弃用：接收语音助手的数据并更新 videos
   const handleUpdateMedias = (newMediaData) => {
-    setMedias(prev => [...prev, newMediaData]);
+    if (newMediaData && newMediaData.length > 0) {
+      setMedias(newMediaData);
+    } else {
+      console.log("没有可添加的媒体数据");
+    }
+  };
+
+  // 监听redis的sse channel发布的影视查询信息
+  const eventSource = new EventSource('http://localhost:8000/agent/see');
+  eventSource.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      console.log('收到服务器推送:', data);
   };
 
   useEffect(() => {
@@ -27,7 +38,7 @@ export default function Home() {
         id: 2,
         name: '【Playlist】温暖的旋律让你忘却疲惫|居家歌单|放松|慵懒|节奏',
         img: 'https://tse1-mm.cn.bing.net/th/id/OIP-C.dC6CLNcwmIg1I2fEbinJyQHaE5',
-        videoUrl: 'http://localhost:8000/agent/media/2',
+        url: 'http://localhost:8000/agent/media/2',
         views: '7.5万',
         duration: '43:38'
       },

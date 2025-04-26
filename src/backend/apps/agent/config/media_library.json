@@ -13,13 +13,13 @@
     "access_control": {
       "min_age": 12
     },
-    "img_name": "1.png",
+    "img": "https://tse1-mm.cn.bing.net/th/id/OIP-C.dC6CLNcwmIg1I2fEbinJyQHaE5",
     "file_name": "test.mp4"
   },
   {
     "id": 2,
-    "type": "video",
-    "name": "pubg",
+    "type": "movie",
+    "name": "疾速追杀",
     "year": 2004,
     "director": "周星驰",
     "actors": ["周星驰", "元秋", "梁小龙"],
@@ -30,7 +30,92 @@
     "access_control": {
       "min_age": 12
     },
-    "img_name": "2.png",
+    "img": "https://tse1-mm.cn.bing.net/th/id/OIP-C.dC6CLNcwmIg1I2fEbinJyQHaE5",
+    "file_name": "pubg.mp4"
+  },
+  {
+    "id":3,
+    "type": "movie",
+    "name": "碟中谍6",
+    "year": 2004,
+    "director": "周星驰",
+    "actors": ["周星驰", "元秋", "梁小龙"],
+    "tags": ["动作", "喜剧", "武侠"],
+    "rating": 8.7,
+    "duration": "04:09",
+    "views": 200000,
+    "access_control": {
+      "min_age": 12
+    },
+    "img": "https://tse1-mm.cn.bing.net/th/id/OIP-C.dC6CLNcwmIg1I2fEbinJyQHaE5",
+    "file_name": "pubg.mp4"
+  },
+  {
+    "id": 4,
+    "type": "movie",
+    "name": "疯狂的麦克斯4",
+    "year": 2004,
+    "director": "周星驰",
+    "actors": ["周星驰", "元秋", "梁小龙"],
+    "tags": ["动作", "喜剧", "武侠"],
+    "rating": 8.7,
+    "duration": "04:09",
+    "views": 200000,
+    "access_control": {
+      "min_age": 12
+    },
+    "img": "https://tse1-mm.cn.bing.net/th/id/OIP-C.dC6CLNcwmIg1I2fEbinJyQHaE5",
+    "file_name": "pubg.mp4"
+  },
+  {
+    "id": 5,
+    "type": "movie",
+    "name": "007：无暇赴死",
+    "year": 2004,
+    "director": "周星驰",
+    "actors": ["周星驰", "元秋", "梁小龙"],
+    "tags": ["动作", "喜剧", "武侠"],
+    "rating": 8.7,
+    "duration": "04:09",
+    "views": 200000,
+    "access_control": {
+      "min_age": 12
+    },
+    "img": "https://tse1-mm.cn.bing.net/th/id/OIP-C.dC6CLNcwmIg1I2fEbinJyQHaE5",
+    "file_name": "pubg.mp4"
+  },
+  {
+    "id": 6,
+    "type": "movie",
+    "name": "速度与激情7",
+    "year": 2004,
+    "director": "周星驰",
+    "actors": ["周星驰", "元秋", "梁小龙"],
+    "tags": ["动作", "喜剧", "武侠"],
+    "rating": 8.7,
+    "duration": "04:09",
+    "views": 200000,
+    "access_control": {
+      "min_age": 12
+    },
+    "img": "https://tse1-mm.cn.bing.net/th/id/OIP-C.dC6CLNcwmIg1I2fEbinJyQHaE5",
+    "file_name": "pubg.mp4"
+  },
+  {
+    "id": 7,
+    "type": "video",
+    "name": "新世纪福音战士",
+    "year": 2004,
+    "director": "周星驰",
+    "actors": ["周星驰", "元秋", "梁小龙"],
+    "tags": ["动作", "喜剧", "武侠"],
+    "rating": 8.7,
+    "duration": "04:09",
+    "views": 200000,
+    "access_control": {
+      "min_age": 12
+    },
+    "img": "https://tse1-mm.cn.bing.net/th/id/OIP-C.dC6CLNcwmIg1I2fEbinJyQHaE5",
     "file_name": "pubg.mp4"
   }
 ]

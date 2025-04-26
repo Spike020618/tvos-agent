@@ -7,7 +7,7 @@ const VoiceAssistant = ({ onUpdateMedias }) => {
   const [conversation, setConversation] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [mediaData, setMediaData] = useState(null);  // Add this state
+  const [mediaData, setMediaData] = useState([]);
   
   const {
     transcript,
@@ -35,7 +35,7 @@ const VoiceAssistant = ({ onUpdateMedias }) => {
     
     try {
       // API调用 - 按照您的要求配置headers和body
-      const searchUrl = `http://127.0.0.1:8000/agent/search?message=${encodeURIComponent(transcript)}`;
+      const searchUrl = `http://127.0.0.1:8000/agent/media_search?message=${encodeURIComponent(transcript)}`;
       const response = await fetch(searchUrl, {
         method: 'GET',
         mode: 'cors',  // 明确启用CORS模式
@@ -100,7 +100,9 @@ const VoiceAssistant = ({ onUpdateMedias }) => {
 
   // 新增：将视频数据推送到父组件
   const handleAddToMedias = (mediaData) => {
+      console.log(mediaData)
       onUpdateMedias(mediaData);
+      mediaData = []
   };
 
   const speak = (text) => {
@@ -188,6 +190,15 @@ const VoiceAssistant = ({ onUpdateMedias }) => {
                 </div>
               )}
             </div>
+
+            {mediaData.length > 0 && (
+              <button 
+                onClick={() => handleAddToMedias(mediaData)}
+                className="add-video-btn"
+              >
+                ➕ 添加到推荐视频
+              </button>
+            )}
             
             {/* 语音控制区域 */}
             <div className="voice-controls">
@@ -203,13 +214,6 @@ const VoiceAssistant = ({ onUpdateMedias }) => {
                   </>
                 ) : '🎤 开始说话'}
               </button>
-              <button 
-                onClick={() => handleAddToMedias(mediaData)}
-                className="add-video-btn"
-              >
-                ➕ 添加到推荐视频
-              </button>
-              
               <div className="status-text">
                 {transcript || (listening ? "请说出您的需求..." : "点击麦克风开始对话")}
               </div>

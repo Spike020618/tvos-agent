@@ -65,7 +65,7 @@ class TaskPlanner:
             
             **规则：**
             1. 当输入内容包含影视领域时：
-               ["search", "talk"]
+               ["media", "talk"]
             2. 其他情况：
                ["talk"]
 
@@ -75,11 +75,11 @@ class TaskPlanner:
             - 导演/演员/主演/片名
             
             **输出要求：**
-            - 数组只能包含注册模块（talk/search）""",
+            - 数组只能包含注册模块（talk/media）""",
             functions=[]
         )
 
-    def plan(self, message: str) -> list[Literal["search", "talk"]]:
+    def plan(self, message: str) -> list[Literal["media", "talk"]]:
         """混合拆解流程"""
         # 第一步：本地快速判断
         local_decision = self._local_judge(message)
@@ -96,7 +96,7 @@ class TaskPlanner:
 
         # 明确需要搜索的情况
         if any(kw in text_lower for kw in ["电影", "电视剧", "推荐", "导演", "演员"]):
-            return ["talk", "search"]
+            return ["talk", "media"]
 
         return None  # 本地无法确定
 

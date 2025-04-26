@@ -6,20 +6,21 @@ from django.conf import settings
 from datetime import datetime
 import os
 import re
+import json
 
 
-from .service import Service, Task
+from .service import Service, Task, SseView
 from .utils import get_ip
 
 service = Service()
 task = Task()
+sse_view = SseView()
 
 #@ensure_csrf_cookie  # 强制返回 CSRF Cookie
 def index(request):
     return HttpResponse("Hello Django!")
 
-#@ensure_csrf_cookie  # 强制返回 CSRF Cookie
-def search(request):
+def media_search(request):
     if request.method == 'GET':
         try:
             msg = request.GET.get('message', '')
@@ -32,7 +33,7 @@ def search(request):
                 })
             steps = task.planner.plan(message=msg)
             print(steps)
-            chat, medias, medias_info = service.search(message=msg, steps=steps)
+            chat, medias, medias_info = service.media_search(message=msg, steps=steps)
             return JsonResponse({
                 "chat": chat,
                 "medias": medias,
@@ -106,6 +107,11 @@ def stream_media(request, media_id):
     response['Content-Disposition'] = f'inline; filename="{os.path.basename(media_path)}"'
     return response
 
+@csrf_exempt
+def see(request):
+    response = StreamingHttpResponse(sse_view.event_stream(), content_type='text/event-stream')
+    response['Cache-Control'] = 'no-cache'
+    return response
 
 def get_server_ip(request):
     return JsonResponse({'ip': get_ip()})
@@ -114,7 +120,7 @@ def show_uploader_page(request):
     return render(request, 'agent/uploader.html', {'local_ip': get_ip()})
 
 @csrf_exempt
-def handle_upload(request):
+def upload(request):
     if request.method == 'POST':
         try:
             # 处理文本输入
@@ -131,8 +137,9 @@ def handle_upload(request):
                         destination.write(chunk)
 
             # 分析结果
-            result = service.image_analyze(image_path, text_input)
-            print(result)
+            print(1234567)
+            medias, medias_info = service.image_analyze(image_path, text_input)
+            print(medias, medias_info)
 
             return JsonResponse({
                 'status': 'success',
