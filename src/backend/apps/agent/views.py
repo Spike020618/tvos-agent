@@ -31,9 +31,41 @@ def media_search(request):
                     "medias_info": "",
                     "status": "error"
                 })
+            medias, medias_info = service.media_search(message=msg)
+            return JsonResponse({
+                "chat": "",
+                "medias": medias,
+                "medias_info": medias_info,
+                "status": "success"
+            })
+        except Exception as e:
+            return JsonResponse({
+                "chat": str(e),
+                "medias": "",
+                "medias_info": "",
+                "status": "error"
+            }, status=500)
+    return JsonResponse({
+        "chat": "请使用GET方法",
+        "medias": "",
+        "medias_info": "",
+        "status": "error"
+    })
+
+def voice_media_search(request):
+    if request.method == 'GET':
+        try:
+            msg = request.GET.get('message', '')
+            if task.sensitiveFilter.contains_sensitive(msg):
+                return JsonResponse({
+                    "chat": "⚠️ 检测到敏感词",
+                    "medias": "",
+                    "medias_info": "",
+                    "status": "error"
+                })
             steps = task.planner.plan(message=msg)
             print(steps)
-            chat, medias, medias_info = service.media_search(message=msg, steps=steps)
+            chat, medias, medias_info = service.voice_media_search(message=msg, steps=steps)
             return JsonResponse({
                 "chat": chat,
                 "medias": medias,
@@ -137,7 +169,6 @@ def upload(request):
                         destination.write(chunk)
 
             # 分析结果
-            print(1234567)
             medias, medias_info = service.image_analyze(image_path, text_input)
             print(medias, medias_info)
 

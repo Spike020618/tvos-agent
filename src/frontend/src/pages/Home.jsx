@@ -16,13 +16,6 @@ export default function Home() {
     }
   };
 
-  // 监听redis的sse channel发布的影视查询信息
-  const eventSource = new EventSource('http://localhost:8000/agent/see');
-  eventSource.onmessage = (e) => {
-      const data = JSON.parse(e.data);
-      console.log('收到服务器推送:', data);
-  };
-
   useEffect(() => {
     // 这里使用模拟数据，实际项目中应该调用API
     const mockMedias = [
@@ -45,8 +38,23 @@ export default function Home() {
     ]
     setMedias(mockMedias)
     
-    // 实际API调用示例：
-    // axios.get('/api/videos').then(res => setVideos(res.data))
+    // 监听redis的sse channel发布的影视查询信息
+    const eventSource = new EventSource('http://localhost:8000/agent/see');
+    eventSource.onmessage = (e) => {
+        const data = JSON.parse(e.data);
+        console.log('收到服务器更新:', data);
+        setMedias(data);
+    };
+
+    eventSource.onerror = (err) => {
+      console.error('SSE连接出错:', err);
+      eventSource.close();
+    };
+
+    // 组件卸载时关闭连接
+    return () => {
+      eventSource.close();
+    };
   }, [])
 
   return (

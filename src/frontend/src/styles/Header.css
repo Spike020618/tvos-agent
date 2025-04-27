@@ -1,0 +1,27 @@
+.search {
+    display: flex;        /* 横向排列 */
+    align-items: center;   /* 高度对齐 */
+    justify-content: flex-end; /* 整个搜索区域靠右 */
+    gap: 10px;             /* 输入框和按钮之间10px间距 */
+  }
+  
+  .search input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    min-width: 300px;
+  }
+  
+  .search button {
+    padding: 8px 16px;
+    background: #1890ff;
+    color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  
+  .search button:hover {
+    background: #40a9ff;
+  }
+  

@@ -6,7 +6,8 @@ from . import views
 urlpatterns = [
     path("", views.index, name="index"),
 
-    path("media_search", views.media_search, name='search'),
+    path("media_search", views.media_search, name='media search'),
+    path("voice_media_search", views.voice_media_search, name='voice media search'),
     path('media/<int:media_id>', views.stream_media, name='media-stream'),
     path('server_ip', views.get_server_ip),
     path('see', views.see, name='see'),

@@ -2,120 +2,109 @@
   {
     "id": 1,
     "type": "movie",
-    "name": "功夫",
+    "name": "赌圣",
     "year": 2004,
-    "director": "周星驰",
-    "actors": ["周星驰", "元秋", "梁小龙"],
-    "tags": ["动作", "喜剧", "武侠"],
+    "director": "元奎&刘镇伟",
+    "actors": ["周星驰", "吴孟达", "吴君如", "张敏"],
+    "tags": ["动作", "喜剧", "爱情"],
     "rating": 8.7,
-    "duration": "04:09",
+    "duration": "1:56:00",
     "views": 200000,
     "access_control": {
       "min_age": 12
     },
-    "img": "https://tse1-mm.cn.bing.net/th/id/OIP-C.dC6CLNcwmIg1I2fEbinJyQHaE5",
+    "img": "https://th.bing.com/th/id/R.b82cb9005db6644109f40c852b05815d?rik=1xVtHIHyn6aULw&pid=ImgRaw&r=0",
+    "url": "http://localhost:8000/agent/media/1",
     "file_name": "test.mp4"
   },
   {
     "id": 2,
     "type": "movie",
     "name": "疾速追杀",
-    "year": 2004,
-    "director": "周星驰",
-    "actors": ["周星驰", "元秋", "梁小龙"],
-    "tags": ["动作", "喜剧", "武侠"],
+    "year": 2014,
+    "director": "查德·斯塔赫斯基&大卫·雷奇",
+    "actors": ["基努·里维斯", "阿尔菲·艾伦", "威廉·达福", "安卓恩·帕利奇", "布里吉特·瑞根", "布丽姬·穆娜", "麦克·恩奎斯特", "伊恩·麦柯肖恩"],
+    "tags": ["黑色", "动作", "喜剧"],
     "rating": 8.7,
     "duration": "04:09",
     "views": 200000,
     "access_control": {
       "min_age": 12
     },
-    "img": "https://tse1-mm.cn.bing.net/th/id/OIP-C.dC6CLNcwmIg1I2fEbinJyQHaE5",
-    "file_name": "pubg.mp4"
+    "img": "https://upload.wikimedia.org/wikipedia/zh/9/98/John_Wick_TeaserPoster.jpg",
+    "url": "http://localhost:8000/agent/media/2",
+    "file_name": "test.mp4"
   },
   {
     "id":3,
     "type": "movie",
     "name": "碟中谍6",
-    "year": 2004,
-    "director": "周星驰",
-    "actors": ["周星驰", "元秋", "梁小龙"],
-    "tags": ["动作", "喜剧", "武侠"],
+    "year": 2018,
+    "director": "克里斯托夫·迈考利",
+    "actors": ["汤姆·克鲁斯", "丽贝卡·弗格森", "亨利·卡维尔", "西蒙·佩吉", "亚历克·鲍德温", "安吉拉·贝塞特"],
+    "tags": ["动作"],
     "rating": 8.7,
-    "duration": "04:09",
+    "duration": "2:28:00",
     "views": 200000,
     "access_control": {
       "min_age": 12
     },
-    "img": "https://tse1-mm.cn.bing.net/th/id/OIP-C.dC6CLNcwmIg1I2fEbinJyQHaE5",
-    "file_name": "pubg.mp4"
+    "img": "https://th.bing.com/th/id/R.05f6bce8cdb1abb734a873c6c4c4820c?rik=KpxIcJFBJJOVIQ&riu=http%3a%2f%2fimg1.mydrivers.com%2fimg%2f20180726%2ffbaf4f43ca6344fc9e91f3488037e036.jpg&ehk=iqnyPV02MHxn9F4OusRX6mel9j2x1dP1%2b90tMdDYof0%3d&risl=&pid=ImgRaw&r=0",
+    "url": "http://localhost:8000/agent/media/3",
+    "file_name": "test.mp4"
   },
   {
     "id": 4,
     "type": "movie",
-    "name": "疯狂的麦克斯4",
-    "year": 2004,
-    "director": "周星驰",
-    "actors": ["周星驰", "元秋", "梁小龙"],
-    "tags": ["动作", "喜剧", "武侠"],
+    "name": "疯狂的麦克斯：狂暴之路",
+    "year": 2015,
+    "director": "乔治·米勒",
+    "actors": ["汤姆·哈迪", "查理兹·塞隆", "尼古拉斯·霍尔特", "休·基斯-拜恩", "乔什·赫尔曼"],
+    "tags": ["动作", "科幻", "冒险"],
     "rating": 8.7,
-    "duration": "04:09",
+    "duration": "2:00:00",
     "views": 200000,
     "access_control": {
       "min_age": 12
     },
-    "img": "https://tse1-mm.cn.bing.net/th/id/OIP-C.dC6CLNcwmIg1I2fEbinJyQHaE5",
-    "file_name": "pubg.mp4"
+    "img": "https://th.bing.com/th/id/R.37a73a15c9e7c1efd863a637b688e084?rik=fJHmQLB2b%2fgUbQ&riu=http%3a%2f%2fwww.v3wall.com%2fwallpaper%2f1680_1050%2f1606%2f1680_1050_201606030853501939059.jpg&ehk=2SaLrPbvZs2TPV8cf08taNa7UoydTWfL6%2bjEmZC7sRw%3d&risl=&pid=ImgRaw&r=0",
+    "url": "http://localhost:8000/agent/media/4",
+    "file_name": "test.mp4"
   },
   {
     "id": 5,
     "type": "movie",
     "name": "007：无暇赴死",
-    "year": 2004,
-    "director": "周星驰",
-    "actors": ["周星驰", "元秋", "梁小龙"],
-    "tags": ["动作", "喜剧", "武侠"],
+    "year": 2021,
+    "director": "凯瑞·福永",
+    "actors": ["丹尼尔·克雷格", "拉尔夫·费因斯"],
+    "tags": ["动作", "冒险", "惊悚"],
     "rating": 8.7,
-    "duration": "04:09",
+    "duration": "2:43:00",
     "views": 200000,
     "access_control": {
       "min_age": 12
     },
-    "img": "https://tse1-mm.cn.bing.net/th/id/OIP-C.dC6CLNcwmIg1I2fEbinJyQHaE5",
-    "file_name": "pubg.mp4"
+    "img": "https://th.bing.com/th/id/R.4f193b257742ae51b632f3b6a456ff14?rik=Okyr4kl9sBLENQ&riu=http%3a%2f%2fn.sinaimg.cn%2fsinakd20211028ac%2f40%2fw480h360%2f20211028%2f288e-de4cece74b3828242eb776a50bfa292e.jpg&ehk=AJEU4OZ9eE%2fQ4iACFD7c62ktlGwydBPBYHnPcF%2bOGt4%3d&risl=&pid=ImgRaw&r=0",
+    "url": "http://localhost:8000/agent/media/5",
+    "file_name": "test.mp4"
   },
   {
     "id": 6,
     "type": "movie",
     "name": "速度与激情7",
-    "year": 2004,
-    "director": "周星驰",
-    "actors": ["周星驰", "元秋", "梁小龙"],
-    "tags": ["动作", "喜剧", "武侠"],
+    "year": 2013,
+    "director": "温子仁",
+    "actors": ["范·迪塞尔", "保罗·沃克", "道恩·强森", "米歇尔·罗德里格兹", "杰森·斯坦森", "卢卡斯·布莱克"],
+    "tags": ["动作", "犯罪"],
     "rating": 8.7,
     "duration": "04:09",
     "views": 200000,
     "access_control": {
       "min_age": 12
     },
-    "img": "https://tse1-mm.cn.bing.net/th/id/OIP-C.dC6CLNcwmIg1I2fEbinJyQHaE5",
-    "file_name": "pubg.mp4"
-  },
-  {
-    "id": 7,
-    "type": "video",
-    "name": "新世纪福音战士",
-    "year": 2004,
-    "director": "周星驰",
-    "actors": ["周星驰", "元秋", "梁小龙"],
-    "tags": ["动作", "喜剧", "武侠"],
-    "rating": 8.7,
-    "duration": "04:09",
-    "views": 200000,
-    "access_control": {
-      "min_age": 12
-    },
-    "img": "https://tse1-mm.cn.bing.net/th/id/OIP-C.dC6CLNcwmIg1I2fEbinJyQHaE5",
-    "file_name": "pubg.mp4"
+    "img": "https://th.bing.com/th/id/R.210bf6850ee47b0ccd84d5f6a9459864?rik=VODl92A9q9s%2fOQ&riu=http%3a%2f%2fpic.baike.soso.com%2fugc%2fbaikepic2%2f7487%2f20141119110212-337514725.jpg%2f0&ehk=zC9IoGTGDHqmK4qn0CCpymsfMIjJta2NqygS8ExgHjQ%3d&risl=&pid=ImgRaw&r=0",
+    "url": "http://localhost:8000/agent/media/6",
+    "file_name": "test.mp4"
   }
 ]

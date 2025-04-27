@@ -18,11 +18,11 @@ class Service():
             **注意：**
             - 若用户输入最后跟了一个数组，那代表影视检索推荐agent工作并呈现结果。请结合用户前文输入和该结果进行回答
             ''', functions=[])
-        self.media_text = '''你是一个专业的影视查询助手。根据用户输入，返回最匹配的影视结果：
+        self.media_text = '''你是一个专业的影视查询助手。根据用户输入，返回匹配的影视结果：
             
             **规则：**
             1. 如果用户查询的是模糊需求（如类型、推荐、多个选项）：
-            - 返回20个以内影视作品的字符串列表，格式如：["影片1", "影片2", "影片3"]
+            - 返回50个以内影视作品的字符串列表，格式如：["影片1", "影片2", "影片3"]
             2. 如果用户提供了明确特征（如片名、导演、主演、年份等）使其能确定是某部影片而无其他结果：
             - 返回唯一最匹配的影片也为数组，数组有唯一元素，格式如：["影片名"]
             3. 无结果时返回空列表：[]
@@ -65,24 +65,28 @@ class Service():
             if media["name"] in medias
         ]
         return medias_info
+    
+    def media_search(self, message:str):
+        medias = self._media(message=message)
+        medias_info = self._load_medias_info(medias)
+        redis_client.publish(medias_info)
+        return medias, medias_info
 
-    def media_search(self, message:str, steps:list[str]):
+    def voice_media_search(self, message:str, steps:list[str]):
         chat_info = ''
         medias = []
+        medias_info = []
         for step in steps:
             print(step)
             if step == 'media':
-                medias = self._media(message=message)
+                medias, medias_info = self.media_search(message=message)
             elif step == 'talk':
                 chat_info = self._chat(message=message + str(medias))
-        medias_info = self._load_medias_info(medias)
-        redis_client.publish(medias_info)
         return chat_info, medias, medias_info
 
     def image_analyze(self, img_path, text):
         medias = self._image(img_path=img_path, text=text)
         medias_info = self._load_medias_info(medias)
-        print(11111111111111111111111)
         redis_client.publish(medias_info)
         return medias, medias_info
 

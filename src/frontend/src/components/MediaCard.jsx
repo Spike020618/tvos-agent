@@ -34,8 +34,8 @@ export default function MediaCard({ media }) {
         </div>
       </div>
       
-      {/* 全屏播放层（保持不变） */}
-      {/*isFullscreen && (
+      {/* 全屏播放层 */}
+      {isFullscreen && (
         <div className="fullscreen-overlay">
           <button 
             className="close-button"
@@ -43,9 +43,19 @@ export default function MediaCard({ media }) {
           >
             ×
           </button>
-          <video src={media.url} scrolling="no" border="0" frameBorder="no" frameSpacing="0" allowFullScreen="true"></video>
+          <video 
+            src={media.url} 
+            controls
+            autoPlay
+            allowFullScreen={true}  // 修复1：使用正确属性名和布尔值
+            style={{ 
+              border: 'none',      // 修复2：用CSS替代废弃属性
+              width: '100%',
+              height: '100%'
+            }}
+          />
         </div>
-      )*/}
+      )}
     </>
   );
 }

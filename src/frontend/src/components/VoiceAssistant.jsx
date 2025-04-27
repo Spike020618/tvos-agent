@@ -35,7 +35,7 @@ const VoiceAssistant = ({ onUpdateMedias }) => {
     
     try {
       // API调用 - 按照您的要求配置headers和body
-      const searchUrl = `http://127.0.0.1:8000/agent/media_search?message=${encodeURIComponent(transcript)}`;
+      const searchUrl = `http://localhost:8000/agent/voice_media_search?message=${encodeURIComponent(transcript)}`;
       const response = await fetch(searchUrl, {
         method: 'GET',
         mode: 'cors',  // 明确启用CORS模式
@@ -58,10 +58,10 @@ const VoiceAssistant = ({ onUpdateMedias }) => {
       let data;
       try {
         data = await response.json();
-        console.log('🟢 JSON解析结果:', data); // 调试3：打印解析后的数据
+        console.log('🟢 语音助手解析成功:', data); // 调试3：打印解析后的数据
       } catch (jsonError) {
         const textBody = await response.text();
-        console.error('🔴 JSON解析失败:', {
+        console.error('🔴 语音助手解析失败:', {
           error: jsonError,
           rawText: textBody,
           headers: [...response.headers.entries()]
@@ -191,14 +191,14 @@ const VoiceAssistant = ({ onUpdateMedias }) => {
               )}
             </div>
 
-            {mediaData.length > 0 && (
+            {/*mediaData.length > 0 && (
               <button 
                 onClick={() => handleAddToMedias(mediaData)}
                 className="add-video-btn"
               >
                 ➕ 添加到推荐视频
               </button>
-            )}
+            )*/}
             
             {/* 语音控制区域 */}
             <div className="voice-controls">
