@@ -14,7 +14,6 @@ from .utils import get_ip
 
 service = Service()
 task = Task()
-sse_view = SseView()
 
 #@ensure_csrf_cookie  # 强制返回 CSRF Cookie
 def index(request):
@@ -141,6 +140,7 @@ def stream_media(request, media_id):
 
 @csrf_exempt
 def see(request):
+    sse_view = SseView()  # 每个连接新建实例
     response = StreamingHttpResponse(sse_view.event_stream(), content_type='text/event-stream')
     response['Cache-Control'] = 'no-cache'
     return response
