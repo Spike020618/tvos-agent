@@ -110,7 +110,7 @@ const VoiceAssistant = ({ onUpdateMedias }) => {
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'zh-CN';
-    utterance.rate = 0.9; // 适当语速
+    utterance.rate = 1.2; // 适当语速
     utterance.onstart = () => setIsSpeaking(true);
     utterance.onend = () => setIsSpeaking(false);
     utterance.onerror = (e) => {
