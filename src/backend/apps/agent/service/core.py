@@ -4,7 +4,7 @@ import json
 
 from ..deepseek import Agent
 
-from .clients import deepseek_client, zhipu_client, redis_client
+from .clients import deepseek_client, zhipu_client, get_redis_client
 
 class Service():
     def __init__(self) -> None:
@@ -93,6 +93,7 @@ class Service():
     def media_search(self, message:str):
         medias = self._media(message=message)
         medias_info = self._load_medias_info(medias)
+        redis_client = get_redis_client()
         redis_client.publish(medias_info)
         return medias, medias_info
 
@@ -113,6 +114,7 @@ class Service():
         if not safe :
             return safe, medias, []
         medias_info = self._load_medias_info(medias)
+        redis_client = get_redis_client()
         redis_client.publish(medias_info)
         return safe, medias, medias_info
 

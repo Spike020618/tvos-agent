@@ -1,11 +1,12 @@
 from queue import Queue
 import threading
-from .clients import redis_client
+from .clients import get_redis_client
 
 clients = set()
 
 def background_listener():
     """独立线程运行的消息监听"""
+    redis_client = get_redis_client()
     for message in redis_client.pubsub.listen():
         if message['type'] == 'message':
             data = message['data']

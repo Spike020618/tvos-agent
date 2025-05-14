@@ -11,10 +11,10 @@ from .clients import deepseek_client
 class Task():
     def __init__(self) -> None:
         self.name = 'task'
-        self.sensitiveFilter = SensitiveFilter('./apps/agent/config/tencent-sensitive-words/sensitive_words_lines.txt')
+        self.textSensitiveFilter = TextSensitiveFilter('./apps/agent/config/tencent-sensitive-words/sensitive_words_lines.txt')
         self.planner = TaskPlanner()
 
-class SensitiveFilter:
+class TextSensitiveFilter:
     def __init__(self, word_file=None):
         """
         初始化敏感词过滤器

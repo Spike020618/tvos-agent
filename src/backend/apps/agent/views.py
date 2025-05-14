@@ -6,8 +6,6 @@ from django.conf import settings
 from datetime import datetime
 import os
 import re
-import json
-
 
 from .service import Service, Task, SseView
 from .utils import get_ip
@@ -23,7 +21,7 @@ def media_search(request):
     if request.method == 'GET':
         try:
             msg = request.GET.get('message', '')
-            if task.sensitiveFilter.contains_sensitive(msg):
+            if task.textSensitiveFilter.contains_sensitive(msg):
                 return JsonResponse({
                     "chat": "⚠️ 检测到敏感词",
                     "medias": "",
@@ -55,7 +53,7 @@ def voice_media_search(request):
     if request.method == 'GET':
         try:
             msg = request.GET.get('message', '')
-            if task.sensitiveFilter.contains_sensitive(msg):
+            if task.textSensitiveFilter.contains_sensitive(msg):
                 return JsonResponse({
                     "chat": "⚠️ 检测到敏感词",
                     "medias": "",
