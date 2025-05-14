@@ -169,14 +169,18 @@ def upload(request):
                         destination.write(chunk)
 
             # 分析结果
-            medias, medias_info = service.image_analyze(image_path, text_input)
-            print(medias, medias_info)
-
-            return JsonResponse({
-                'status': 'success',
-                'text': text_input,
-                'image_path': image_path,
-            })
+            safe, medias, medias_info = service.image_analyze(image_path, text_input)
+            print(safe, medias, medias_info)
+            if safe:
+                return JsonResponse({
+                    'status': 'success',
+                    'message': '解析成功！'
+                })
+            else:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': '图片涉及敏感信息！'
+                })
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
