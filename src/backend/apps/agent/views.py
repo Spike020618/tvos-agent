@@ -21,6 +21,13 @@ def media_search(request):
     if request.method == 'GET':
         try:
             msg = request.GET.get('message', '')
+            if task.taskSensitiveFilter.contains_sensitive(msg):
+                return JsonResponse({
+                    "chat": "⚠️ 检测到敏感任务",
+                    "medias": "",
+                    "medias_info": "",
+                    "status": "error"
+                })
             if task.textSensitiveFilter.contains_sensitive(msg):
                 return JsonResponse({
                     "chat": "⚠️ 检测到敏感词",
@@ -53,6 +60,13 @@ def voice_media_search(request):
     if request.method == 'GET':
         try:
             msg = request.GET.get('message', '')
+            if task.taskSensitiveFilter.contains_sensitive(msg):
+                return JsonResponse({
+                    "chat": "⚠️ 检测到敏感任务",
+                    "medias": "",
+                    "medias_info": "",
+                    "status": "error"
+                })
             if task.textSensitiveFilter.contains_sensitive(msg):
                 return JsonResponse({
                     "chat": "⚠️ 检测到敏感词",
@@ -165,6 +179,11 @@ def upload(request):
                 with open(image_path, 'wb+') as destination:
                     for chunk in image_file.chunks():
                         destination.write(chunk)
+            if task.taskSensitiveFilter.contains_sensitive(text_input) or task.textSensitiveFilter.contains_sensitive(text_input):
+                return JsonResponse({
+                    'status': 'error',
+                    'message': '文字涉及敏感信息！'
+                })
 
             # 分析结果
             safe, medias, medias_info = service.image_analyze(image_path, text_input)

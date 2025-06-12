@@ -100,7 +100,7 @@
                 if (result.status === 'success') {
                     alert('提交成功！');
                 } else {
-                    alert('提交失败: ' + (result.message || '未知错误'));
+                    alert('提交失败: ' + (result.message));
                 }
             } catch (error) {
                 console.error('提交错误:', error);

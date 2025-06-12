@@ -18,7 +18,10 @@ export default function Header() {
       
       const data = await response.json();
       console.log('🟢 搜索引擎解析成功:', data);
-      // 这里可以添加结果处理逻辑（如跳转到结果页或更新状态）
+      // 检查返回的状态是否为 error
+      if (data.status === "error") {
+        alert(data.chat); // 使用后端返回的 chat 消息
+      }
     } catch (error) {
       console.error('🔴 搜索引擎解析失败:', error);
       alert('搜索失败，请稍后重试');

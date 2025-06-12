@@ -11,17 +11,17 @@ from .clients import deepseek_client
 class Task():
     def __init__(self) -> None:
         self.name = 'task'
-        self.textSensitiveFilter = TextSensitiveFilter('./apps/agent/config/tencent-sensitive-words/sensitive_words_lines.txt')
+        self.taskSensitiveFilter = SensitiveFilter('./apps/agent/config/task_sensitive_words_lines.txt')
+        self.textSensitiveFilter = SensitiveFilter('./apps/agent/config/tencent-sensitive-words/sensitive_words_lines.txt')
         self.planner = TaskPlanner()
 
-class TextSensitiveFilter:
+class SensitiveFilter:
     def __init__(self, word_file=None):
         """
         初始化敏感词过滤器
-        :param word_file: 词库文件路径，默认使用同目录下的config/sensitive_words.json
         """
         self.automaton = ahocorasick.Automaton()
-        self.word_file = word_file or Path(__file__).parent / 'config' / 'sensitive_words.json'
+        self.word_file = word_file
         self._load_words()
 
     def _load_words(self):
