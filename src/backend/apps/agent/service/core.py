@@ -6,9 +6,16 @@ from ..deepseek import Agent
 
 from .clients import deepseek_client, zhipu_client, get_redis_client
 
+import requests
+from typing import Dict, Any
+from ..deepseek import Result
+
+
+
 class Service():
     def __init__(self) -> None:
         self.name = 'service'
+        self.chat_history = []
         self.agent_talk = Agent(
             name='Talk Agent',
             instructions='''你是一个功能强大的对话助手。
@@ -37,11 +44,18 @@ class Service():
             **注意：**
             - 不要额外解释，直接返回结果
             - 优先匹配用户明确指定的特征（如片名、人名、年份）
+
+            当用户询问最新热门影视问题时：
+            1. 调用 call_mcp 工具
+            2. 参数必须设置为：
+            {"tool_name": "search_movies", "parameters": {"query": "最新最热的影视"}}}
+            3. 从工具返回的结果中提取信息回答用户
+"""
             '''
         self.agent_media = Agent(
             name='Movie Search Agent',
             instructions=self.media_prompt,
-            functions=[]
+            functions=[call_mcp]
         )
 
         self.figure_prompt = '''你是一个专业的可输入图片的多模态影视查询助手。根据用户输入，返回匹配的影视结果：
@@ -72,15 +86,21 @@ class Service():
             self.medias = json.load(f)
 
     def _chat(self, message:str):
-        response = deepseek_client.run(agent=self.agent_talk, messages=[{"role": "user", "content": message}], context_variables={})
+        self.chat_history.append({"role": "user", "content": message})
+        response = deepseek_client.run(agent=self.agent_talk, messages=self.chat_history)
+        self.chat_history.append(response.messages[0])
         return response.messages[0]['content']
 
     def _media(self, message:str):
         response = deepseek_client.run(agent=self.agent_media, messages=[{"role": "user", "content": message}], context_variables={})
-        return response.messages[0]['content']
+        # 假设 response.messages 是可迭代的消息容器
+        for message in response.messages:
+            print(message)  # 直接打印消息内容
+        return response.messages[-1]['content']
 
     def _image(self, img_path, text):
         safe, response = zhipu_client.chat(img_path=img_path,text=self.figure_prompt+'用户输入：'+text)
+        print(response)
         return safe, response
 
     def _load_medias_info(self, medias):
@@ -128,3 +148,95 @@ class Service():
         if not os.path.exists(video_path):
             return ''
         return video_path
+
+
+def call_mcp(
+    tool_name: str,
+    parameters: Dict[str, Any],
+    context_variables: Dict[str, Any] = {}
+) -> Result:
+    print(tool_name, parameters, context_variables)
+    """
+    调用MCP服务器并将结果存入上下文变量
+    
+    参数:
+        tool_name: MCP服务器的工具名称（如"search_movies"）
+        parameters: 传递给MCP工具的参数（如{"query": "动作电影"}）
+        context_variables: Swarm上下文变量（用于存储结果）
+    """
+    try:
+        # 从上下文获取MCP服务器地址（也可硬编码）
+        mcp_url = "http://127.0.0.1:9000/execute"
+        
+        # 构造请求体
+        payload = {
+            "tool_name": tool_name,
+            "parameters": parameters
+        }
+        
+        # 发送请求（使用stream=True启用流式响应）
+        with requests.post(mcp_url, json=payload, stream=True) as response:
+            response.raise_for_status()
+            
+            # 检查Content-Type是否为SSE格式
+            content_type = response.headers.get('Content-Type', '')
+            if 'text/event-stream' in content_type:
+                # 处理流式SSE响应
+                result = parse_sse_response(response)
+                print('SSE Type')
+            else:
+                # 处理普通JSON响应
+                result = response.json()
+        print(result)
+        
+        # 将结果存入上下文变量（使用工具名称作为键前缀）
+        context_key = f"mcp_result_{tool_name}"
+        context_variables[context_key] = result
+        
+        # 封装结果为Result对象（value需为字符串，agent可为None）
+        return Result(
+            value=json.dumps(result),
+            context_variables={context_key: result}
+        )
+        
+    except Exception as e:
+        # 错误处理：存入错误信息到上下文
+        error_msg = f"MCP调用失败: {str(e)}"
+        context_variables[f"mcp_error_{tool_name}"] = error_msg
+        return Result(
+            value=error_msg,
+            context_variables={f"mcp_error_{tool_name}": error_msg}
+        )
+    
+def parse_sse_response(response) -> Dict[str, Any]:
+    """解析SSE格式的流式响应，合并所有data段"""
+    full_result = {"data": []}
+    current_line = ""
+    
+    for chunk in response.iter_content(chunk_size=1024, decode_unicode=True):
+        if not chunk:
+            continue
+            
+        # 处理分块数据
+        current_line += chunk
+        
+        # 按行分割（SSE使用\n\n分隔消息）
+        lines = current_line.split('\n')
+        current_line = lines.pop()  # 最后一行可能不完整，保留到下一次处理
+        
+        for line in lines:
+            line = line.strip()
+            if line.startswith('data:'):
+                data_str = line[5:].strip()
+                if data_str:
+                    try:
+                        data = json.loads(data_str)
+                        full_result["data"].append(data)
+                    except json.JSONDecodeError:
+                        print(f"Invalid JSON in SSE: {data_str}")
+    
+    # 提取最终结果（根据MCP实际返回结构调整）
+    if full_result["data"] and isinstance(full_result["data"][0], dict):
+        # 假设最后一条data包含完整结果
+        return full_result["data"][-1]
+    return full_result

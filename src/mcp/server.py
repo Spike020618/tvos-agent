@@ -3,6 +3,7 @@ import asyncio
 import aiohttp
 import argparse
 import time
+import pandas as pd
 from typing import Dict, Any, List, Optional, Callable
 from utils import get_logger, generate_request_id, validate_mcp_request, format_message_for_logging
 
@@ -23,7 +24,6 @@ class MCPServer:
         
         # 注册内置工具
         self.register_tool("search_movies", self.search_movies)
-        self.register_tool("get_user_profile", self.get_user_profile)
         self.register_tool("calculate", self.calculate)
     
     def register_tool(self, name: str, func: Callable):
@@ -32,23 +32,30 @@ class MCPServer:
         logger.info(f"Tool registered: {name}")
     
     async def search_movies(self, query: str) -> List[Dict[str, Any]]:
-        """模拟搜索电影工具"""
-        await asyncio.sleep(1)  # 模拟网络延迟
-        return [
-            {"id": 1, "title": f"{query} Movie 1", "year": 2023},
-            {"id": 2, "title": f"{query} Movie 2", "year": 2022},
-            {"id": 3, "title": f"{query} Movie 3", "year": 2021}
-        ]
-    
-    async def get_user_profile(self, user_id: str) -> Dict[str, Any]:
-        """模拟获取用户资料工具"""
-        await asyncio.sleep(0.5)  # 模拟数据库查询
-        return {
-            "id": user_id,
-            "name": f"User {user_id}",
-            "email": f"user{user_id}@example.com",
-            "created_at": "2023-01-01"
-        }
+        excel_file = pd.ExcelFile('movie.xlsx')
+        # 获取指定工作表中的数据
+        df = excel_file.parse('Sheet1')
+
+        # 将票房列转换为数值类型
+        df['票房数值'] = df['票房'].str.extract(r'(\d+\.?\d*)').astype(float)
+
+        # 按照票房数值降序排序
+        sorted_df = df.sort_values(by='票房数值', ascending=False)
+
+        # 获取前 top_n 个影片
+        top_n = 10
+        top_movies = sorted_df.head(top_n)
+
+        result = []
+        for index, row in top_movies.iterrows():
+            movie_info = {
+                "id": index + 1,
+                "title": row['title'],
+                "票房": row['票房']
+            }
+            result.append(movie_info)
+
+        return result
     
     async def calculate(self, expression: str) -> float:
         """模拟计算工具"""
@@ -92,6 +99,17 @@ class MCPServer:
             
             tool_name = data.get("tool_name")
             parameters = data.get("parameters", {})
+            # 关键：强制parameters为字典类型
+            if not isinstance(parameters, dict):
+                try:
+                    parameters = json.loads(parameters)
+                except (json.JSONDecodeError, TypeError):
+                    logger.error(f"Invalid parameters type: {type(parameters)}")
+                    return aiohttp.web.json_response(
+                        {"status": "error", "message": "parameters must be a JSON object"},
+                        status=400
+                    )
+            print(tool_name, parameters)
             
             # 执行工具
             result = await self.execute_tool(tool_name, parameters)
