@@ -4,6 +4,7 @@ import aiohttp
 import argparse
 import time
 import pandas as pd
+import re
 from typing import Dict, Any, List, Optional, Callable
 from utils import get_logger, generate_request_id, validate_mcp_request, format_message_for_logging
 
@@ -23,15 +24,24 @@ class MCPServer:
         self.site = None
         
         # 注册内置工具
-        self.register_tool("search_movies", self.search_movies)
-        self.register_tool("calculate", self.calculate)
+        self.register_tool("hot_medias", self.hot_medias)
+        self.register_tool("search_medias", self.search_medias)
+        
+        self.movies = self._preprocess_movies()
+
+    def _preprocess_movies(self):
+        df = pd.read_csv('douban/movies.csv')
+        # 预处理年份（只执行一次）
+        if 'YEAR' in df.columns:
+            df['YEAR'] = df['YEAR'].astype(str).str.extract(r'(\d+)').astype(float)
+        return df
     
     def register_tool(self, name: str, func: Callable):
         """注册工具函数"""
         self.tools[name] = func
         logger.info(f"Tool registered: {name}")
     
-    async def search_movies(self, query: str) -> List[Dict[str, Any]]:
+    async def hot_medias(self, query: str) -> List[Dict[str, Any]]:
         excel_file = pd.ExcelFile('movie.xlsx')
         # 获取指定工作表中的数据
         df = excel_file.parse('Sheet1')
@@ -57,13 +67,49 @@ class MCPServer:
 
         return result
     
-    async def calculate(self, expression: str) -> float:
-        """模拟计算工具"""
+    async def search_medias(self, query: dict):
         try:
-            # 注意：实际应用中不应该直接使用eval，这里仅作演示
-            return eval(expression)
+             # 筛选逻辑
+            results = self.movies.copy()
+            
+            # 遍历query中的所有键值对，动态应用筛选条件
+            for key, value in query.items():
+                # 确保值不为空
+                if value is None or value == "":
+                    continue
+                    
+                # 根据不同的键应用不同的筛选逻辑
+                if key == 'name':
+                    results = results[results['NAME'].astype(str).str.contains(value, case=False, na=False)]
+                elif key == 'director' or key == 'actor':
+                    # 导演字段包含该人 OR 演员字段包含该人
+                    is_director = results['DIRECTORS'].astype(str).str.contains(value, case=False, na=False)
+                    is_actor = results['ACTORS'].astype(str).str.contains(value, case=False, na=False)
+                    results = results[is_director | is_actor]  # 取两者的并集
+                elif key == 'genre':
+                    results = results[results['GENRES'].astype(str).str.contains(value, case=False, na=False)]
+                elif key == 'min_year':
+                    try:
+                        min_year = int(value)
+                        results = results[results['YEAR'] >= min_year]
+                    except ValueError:
+                        print(f"无效的年份值: {value}")
+                elif key == 'max_year':
+                    try:
+                        max_year = int(value)
+                        results = results[results['YEAR'] <= max_year]
+                    except ValueError:
+                        print(f"无效的年份值: {value}")
+                # 可以在这里添加更多字段的筛选逻辑
+                # elif key == '其他字段':
+                #     对应的筛选逻辑
+            
+            # 转换为字典列表并返回
+            return results['NAME'].tolist()
+            
         except Exception as e:
-            raise ValueError(f"Invalid expression: {str(e)}")
+            print(f"操作出错: {e}")
+            return []
     
     async def execute_tool(self, tool_name: str, parameters: Dict[str, Any]) -> Any:
         """执行工具并返回结果"""

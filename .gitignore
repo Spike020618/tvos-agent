@@ -6,3 +6,8 @@
 ​
 # log 不需要提交的任意包含后缀名为log的文件
 *.log
+src/mcp/douban/comments.csv
+src/mcp/douban/movies.csv
+src/mcp/douban/person.csv
+src/mcp/douban/ratings.csv
+src/mcp/douban/users.csv

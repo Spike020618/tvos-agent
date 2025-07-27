@@ -1,7 +1,7 @@
 from django.conf import settings
 import os
 import json
-
+import ast
 from ..deepseek import Agent
 
 from .clients import deepseek_client, zhipu_client, get_redis_client
@@ -28,11 +28,8 @@ class Service():
         self.media_prompt = '''你是一个专业的影视查询助手。根据用户输入，返回匹配的影视结果：
             
             **规则：**
-            1. 如果用户查询的是模糊需求（如类型、推荐、多个选项）：
-            - 返回50个以内影视作品的字符串列表，格式如：["影片1", "影片2", "影片3"]
-            2. 如果用户提供了明确特征（如片名、导演、主演、年份等）使其能确定是某部影片而无其他结果：
-            - 返回唯一最匹配的影片也为数组，数组有唯一元素，格式如：["影片名"]
-            3. 无结果时返回空列表：[]
+            - 根据call_mcp函数返回结果，格式如：["影片1", "影片2", "影片3"]，返回全部影片不要漏掉
+
 
             **示例：**
             用户输入："科幻电影推荐" → ["星际穿越", "盗梦空间", "银翼杀手2049"]
@@ -45,11 +42,22 @@ class Service():
             - 不要额外解释，直接返回结果
             - 优先匹配用户明确指定的特征（如片名、人名、年份）
 
+            当用户查询带有特定信息的影视资源时：
+            1. 调用 call_mcp 工具
+            2. 参数初始化设置为：
+            {"tool_name": "search_medias", "parameters": {"query": {}}}}
+            针对用户输入的信息，提取影片名称信息，类型信息，导演信息，演员信息，开始年份信息，结束年份信息，国家信息，更新参数信息填写到query中，信息不全时，不用填写query里所有字段
+            例如：{"tool_name": "search_medias", "parameters": {"query": {"name": "赌圣", "genre": "喜剧", "director": "张艺谋", "actor": "陈道明", "min_year": "2020", "max_year": "2023", "region": "中国"}}}}
+            信息不全时，不用填写query里所有字段，例如：{"tool_name": "search_medias", "parameters": {"query": {"director": "张艺谋", "actor": "陈道明"}}}}
+            此外注意，单独提到人名时，将该字段同时填入actor和director字段中
+            3. 从工具返回的结果中提取信息回答用户
+
             当用户询问最新热门影视问题时：
             1. 调用 call_mcp 工具
             2. 参数必须设置为：
-            {"tool_name": "search_movies", "parameters": {"query": "最新最热的影视"}}}
+            {"tool_name": "hot_medias", "parameters": {"query": "hot"}}}
             3. 从工具返回的结果中提取信息回答用户
+            
 """
             '''
         self.agent_media = Agent(
@@ -58,28 +66,23 @@ class Service():
             functions=[call_mcp]
         )
 
-        self.figure_prompt = '''你是一个专业的可输入图片的多模态影视查询助手。根据用户输入，返回匹配的影视结果：
+        self.figure_prompt = '''你是一个专业的可输入图片的多模态影视查询助手。根据用户输入，返回匹配的影视元素信息，包括片名，导演，演员：
             **规则：**
             1. 最高优先级：如果用户输入图片含有严重违规内容，如色情（裸露、性暗示）、暴力（血腥、武器）、其他违法内容（毒品、恐怖主义等）：
-            - 必须返回{"safe": false, "response": []}
-            2. 如果用户查询的是模糊需求（如类型、推荐、多个选项）：
-            - 返回50个以内影视作品的字符串列表，格式如：{"safe": true, "response": ["影片1", "影片2", "影片3"]}
-            3. 如果用户提供了明确特征（如片名、导演、主演、年份等）使其能确定是某部影片而无其他结果：
-            - 返回唯一最匹配的影片也为数组，数组有唯一元素，格式如：{"safe": true, "response": ["影片名"]}
-            4. 无结果时返回空列表：{"safe": true, "response": []}
-
-            **content返回示例：**
-            用户输入："科幻电影推荐" → {"safe": true, "response": ["星际穿越", "盗梦空间", "银翼杀手2049"]}
-            用户输入："诺兰导演的电影" → {"safe": true, "response": ["盗梦空间", "星际穿越", "信条"]}
-            用户输入："汤姆·汉克斯主演的太空电影" → {"safe": true, "response": ["阿波罗13号"]}
-            用户输入："2023年王家卫的电视剧" → {"safe": true, "response": ["繁花"]}
-            用户输入："不存在的电影" → {"safe": true, "response": []}
+            - 必须返回{"safe": false, "response": {}}
+            2. 输入不违规：针对用户输入的图片，提取影视名称信息，导演信息或演员信息（只有两种情况）
+            - 优先提取影视名称信息：{"safe": true, "response": {"name": "赌圣"}}
+            - 提取不到影视名称，则提取导演信息或演员信息（识别到人名时，将该字段同时填入actor和director字段中）：{"safe": true, "response": {"director": "陈道明", "actor": "陈道明"}}
+            3. 输入不违规：针对用户输入的文字，补充，类型信息，开始年份信息，结束年份信息，地区信息到response字段里：
+            - {"safe": true, "response": {"director": "陈道明", "actor": "陈道明", "genre": "喜剧", "min_year": "2020", "max_year": "2023", "region": "中国"}}
+            - 不用填充所有字段，文字信息包含就填写，没有就不用填写，例如文字为空：{"safe": true, "response": {"director": "陈道明", "actor": "陈道明"}}
+            3. 无法识别有效信息，反馈空：{"safe": true, "response": {}}
 
             **注意：**
-            - 图片含有严重违规内容，如色情（裸露、性暗示）、暴力（血腥、武器）、其他违法内容（毒品、恐怖主义等）必须返回{"safe": false, "response": []}
+            - 图片含有严重违规内容，如色情（裸露、性暗示）、暴力（血腥、武器）、其他违法内容（毒品、恐怖主义等）必须返回{"safe": false, "response": {}}
             - 匹配用户明确指定的特征（如片名、人名、年份）
             - 不要返回重复片名！
-            注意：必须返回合法JSON，不要额外解释！
+            注意：必须返回合法dict，不要额外解释！
             '''
 
         with open('./apps/agent/config/media_library.json', 'r', encoding='utf-8') as f:
@@ -93,15 +96,17 @@ class Service():
 
     def _media(self, message:str):
         response = deepseek_client.run(agent=self.agent_media, messages=[{"role": "user", "content": message}], context_variables={})
-        # 假设 response.messages 是可迭代的消息容器
+        '''# 假设 response.messages 是可迭代的消息容器
         for message in response.messages:
-            print(message)  # 直接打印消息内容
+            print(message)  # 直接打印消息内容'''
         return response.messages[-1]['content']
 
     def _image(self, img_path, text):
-        safe, response = zhipu_client.chat(img_path=img_path,text=self.figure_prompt+'用户输入：'+text)
-        print(response)
-        return safe, response
+        safe, query = zhipu_client.chat(img_path=img_path,text=self.figure_prompt+'用户输入：'+text)
+        if safe:
+            result = call_mcp(tool_name='search_medias', parameters={"query": ast.literal_eval(query)}).value
+            return safe, json.loads(result)['data']['result']
+        return safe, {}
 
     def _load_medias_info(self, medias):
         medias_info = [
@@ -123,7 +128,7 @@ class Service():
         medias_info = []
         for step in steps:
             print(step)
-            if step == 'media':
+            if step == 'query':
                 medias, medias_info = self.media_search(message=message)
             elif step == 'talk':
                 chat_info = self._chat(message=message + str(medias))
@@ -155,7 +160,7 @@ def call_mcp(
     parameters: Dict[str, Any],
     context_variables: Dict[str, Any] = {}
 ) -> Result:
-    print(tool_name, parameters, context_variables)
+    print('MCP-----', tool_name, parameters, context_variables)
     """
     调用MCP服务器并将结果存入上下文变量
     
@@ -183,11 +188,10 @@ def call_mcp(
             if 'text/event-stream' in content_type:
                 # 处理流式SSE响应
                 result = parse_sse_response(response)
-                print('SSE Type')
             else:
                 # 处理普通JSON响应
                 result = response.json()
-        print(result)
+        #print(result)
         
         # 将结果存入上下文变量（使用工具名称作为键前缀）
         context_key = f"mcp_result_{tool_name}"

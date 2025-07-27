@@ -59,13 +59,14 @@ class TaskPlanner:
         )
 
         # 降级用Agent拆解器
+        # 后续可添加filter，过滤部分影视检索内容
         self.agent_task_planner = Agent(
             name="TaskPlanner",
             instructions="""根据用户输入决定执行步骤，严格按以下规则输出数组：
             
             **规则：**
             1. 当输入内容包含影视领域时：
-               ["media", "talk"]
+               ["query", "talk"]
             2. 其他情况：
                ["talk"]
 
@@ -75,11 +76,11 @@ class TaskPlanner:
             - 导演/演员/主演/片名
             
             **输出要求：**
-            - 数组只能包含注册模块（talk/media）""",
+            - 数组只能包含注册模块（talk/query）""",
             functions=[]
         )
 
-    def plan(self, message: str) -> list[Literal["media", "talk"]]:
+    def plan(self, message: str) -> list[Literal["query", "talk"]]:
         """混合拆解流程"""
         # 第一步：本地快速判断
         local_decision = self._local_judge(message)
@@ -96,7 +97,7 @@ class TaskPlanner:
 
         # 明确需要搜索的情况
         if any(kw in text_lower for kw in ["电影", "电视剧", "推荐", "导演", "演员"]):
-            return ["talk", "media"]
+            return ["query", "talk"]
 
         return None  # 本地无法确定
 
