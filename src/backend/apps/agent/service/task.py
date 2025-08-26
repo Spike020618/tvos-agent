@@ -58,6 +58,10 @@ class TaskPlanner:
             re.IGNORECASE
         )
 
+        self.task_triggers = {
+            "query": [r"查找", r"搜索", r"获取", r"有哪些", r"显示"],  # 触发检索的关键词
+            "talk": [r"解释", r"分析", r"总结", r"为什么", r"怎么样"],  # 触发对话的关键词
+        }
         # 降级用Agent拆解器
         # 后续可添加filter，过滤部分影视检索内容
         self.agent_task_planner = Agent(
@@ -95,10 +99,9 @@ class TaskPlanner:
         """本地规则判断（返回None表示不确定）"""
         text_lower = text.lower()
 
-        # 明确需要搜索的情况
-        if any(kw in text_lower for kw in ["电影", "电视剧", "推荐", "导演", "演员"]):
+        # 使用预编译的正则表达式进行匹配
+        if self.local_keywords.search(text):
             return ["query", "talk"]
-
         return None  # 本地无法确定
 
     def _agent_judge(self, message: str) -> list[str]:

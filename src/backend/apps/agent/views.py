@@ -36,6 +36,7 @@ def media_search(request):
                     "status": "error"
                 })
             medias, medias_info = service.media_search(message=msg)
+            print('media_search', medias, medias_info)
             return JsonResponse({
                 "chat": "",
                 "medias": medias,
@@ -77,6 +78,7 @@ def voice_media_search(request):
             steps = task.planner.plan(message=msg)
             print(steps)
             chat, medias, medias_info = service.voice_media_search(message=msg, steps=steps)
+            print('voice_media_search', chat, medias, medias_info)
             return JsonResponse({
                 "chat": chat,
                 "medias": medias,
@@ -187,7 +189,7 @@ def upload(request):
 
             # 分析结果
             safe, medias, medias_info = service.image_analyze(image_path, text_input)
-            print(safe, medias, medias_info)
+            print('image_media_search', safe, medias, medias_info)
             if safe:
                 return JsonResponse({
                     'status': 'success',

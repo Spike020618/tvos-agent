@@ -104,8 +104,11 @@ class MCPServer:
                 # elif key == '其他字段':
                 #     对应的筛选逻辑
             
-            # 转换为字典列表并返回
-            return results['NAME'].tolist()
+            # 转换为字典列表并返回, 返回前100个
+            results = results.sort_values('YEAR', ascending=False)
+            name_list = results['NAME'].tolist()[:100]
+            print(name_list)
+            return name_list
             
         except Exception as e:
             print(f"操作出错: {e}")

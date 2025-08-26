@@ -48,8 +48,9 @@ class Service():
             {"tool_name": "search_medias", "parameters": {"query": {}}}}
             针对用户输入的信息，提取影片名称信息，类型信息，导演信息，演员信息，开始年份信息，结束年份信息，国家信息，更新参数信息填写到query中，信息不全时，不用填写query里所有字段
             例如：{"tool_name": "search_medias", "parameters": {"query": {"name": "赌圣", "genre": "喜剧", "director": "张艺谋", "actor": "陈道明", "min_year": "2020", "max_year": "2023", "region": "中国"}}}}
-            信息不全时，不用填写query里所有字段，例如：{"tool_name": "search_medias", "parameters": {"query": {"director": "张艺谋", "actor": "陈道明"}}}}
-            此外注意，单独提到人名时，将该字段同时填入actor和director字段中
+            - 信息不全时，不用填写query里所有字段，例如：{"tool_name": "search_medias", "parameters": {"query": {"director": "张艺谋", "actor": "陈道明"}}}}
+            - 年份说明：min_year和max_year是开始年份和结束年份，开始年份一定小于结束年份，且2010年之前则只填写max_year，2010年之后则填写min_year
+            - 此外注意，单独提到人名时，将该字段同时填入actor和director字段中
             3. 从工具返回的结果中提取信息回答用户
 
             当用户询问最新热门影视问题时：
@@ -76,7 +77,8 @@ class Service():
             3. 输入不违规：针对用户输入的文字，补充，类型信息，开始年份信息，结束年份信息，地区信息到response字段里：
             - {"safe": true, "response": {"director": "陈道明", "actor": "陈道明", "genre": "喜剧", "min_year": "2020", "max_year": "2023", "region": "中国"}}
             - 不用填充所有字段，文字信息包含就填写，没有就不用填写，例如文字为空：{"safe": true, "response": {"director": "陈道明", "actor": "陈道明"}}
-            3. 无法识别有效信息，反馈空：{"safe": true, "response": {}}
+            - 年份说明：min_year和max_year是开始年份和结束年份，开始年份一定小于结束年份，且2010年之前则只填写max_year，2010年之后则填写min_year
+            4. 无法识别有效信息，反馈空：{"safe": true, "response": {}}
 
             **注意：**
             - 图片含有严重违规内容，如色情（裸露、性暗示）、暴力（血腥、武器）、其他违法内容（毒品、恐怖主义等）必须返回{"safe": false, "response": {}}
